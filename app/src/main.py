@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
 from api.v1.api_test import test_router
+from api.v1.upload_file import upload_file_router
 from core.logger import LOGGING
 from core.settings import settings
 
@@ -34,6 +35,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.include_router(upload_file_router, prefix="/api/v1/files", tags=["files"])
 app.include_router(test_router, prefix="/api/v1/tests", tags=["tests"])
 
 
