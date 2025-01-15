@@ -1,4 +1,5 @@
-import os
+#import base64
+#import os
 from http import HTTPStatus
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
@@ -13,12 +14,10 @@ upload_file_router = APIRouter()
     )
 async def upload_file(path: str, file: UploadFile = File(...)):
     try:
-        os.mkdir(f"data/{path}")
-        print(os.getcwd())
-    except Exception as e:
-        print(e)
-    try:
         contents = file.file.read()
+        #decoded_bytes = base64.b64decode(contents)
+        #decoded_string = decoded_bytes.decode("utf-8")
+        #print(type(contents))
         with open(f"data/{path}/{file.filename}", "wb") as f:
             f.write(contents)
     except Exception:

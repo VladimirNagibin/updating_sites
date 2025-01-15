@@ -11,6 +11,11 @@ fastapi = "0.111.0"
 pydantic-settings = "2.6.1"
 black = "^24.10.0"
 python-multipart = "0.0.20"
+sshtunnel = "0.4.0"
+SQLAlchemy = "2.0.32"
+PyMySQL = "1.1.1"
+pandas = "2.2.2"
+mysqlclient = "2.2.7"
 
 [build-system]
 requires = ["poetry-core"]
