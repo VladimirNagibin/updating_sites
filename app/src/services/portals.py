@@ -5,7 +5,9 @@ from sqlalchemy.engine.base import Engine
 
 from core.settings import settings
 from services.helper import (
-    get_request_for_upd, get_files_tables, get_tables_for_overload
+    get_request_for_upd,
+    get_files_tables,
+    get_tables_for_overload
 )
 
 
@@ -42,16 +44,12 @@ class PortalServices:
             if err:
                 res['error'] = err
                 success = False
-            result.append(
-                res
-            )
-
+            result.append(res)
         return result, success
 
     def update_portal(self):
         with self.engine.connect() as connection:
             request = get_request_for_upd(self.portal)
-            #print(request)
             try:
                 result = connection.execute(text(request))
             except Exception as e:
@@ -75,27 +73,40 @@ class EtlServices:
     def get_data(self, engine: Engine, table: str):
         with engine.connect() as connection:
             source_data = connection.execute(text(f'SELECT * FROM {table};'))
-            while results := source_data.fetchmany(100):
+            while results := source_data.fetchmany(10000):
                 yield results
 
-    def overload_tables(self):
+    def overload_tables(self, page: int | None = None):
         metadata = MetaData()
-
-        with self.engine_recipient.connect() as connection:
-            for table_name in get_tables_for_overload():
-                print(table_name)
-                table_recipient = Table(
-                    table_name, metadata, autoload_with=self.engine_recipient
-                )
-                result = connection.execute(text(f'TRUNCATE {table_name};'))
-                for batch in self.get_data(self.engine_sender, table_name):
-                    val = [bat._asdict() for bat in batch]
-                    insert_stmt = table_recipient.insert().values(val)
-                    connection.execute(insert_stmt)
-            connection.commit()
+        result: dict = {'tables': [], 'page': page, 'upd': False}
+        try:
+            with self.engine_recipient.connect() as connection:
+                for table_name in get_tables_for_overload(page):
+                    result['tables'].append(table_name)
+                    print(table_name)
+                    table_recipient = Table(
+                        table_name,
+                        metadata,
+                        autoload_with=self.engine_recipient
+                    )
+                    if page == 0 or page is None:
+                        connection.execute(text(f'TRUNCATE {table_name};'))
+                    number_page = 0
+                    for batch in self.get_data(self.engine_sender, table_name):
+                        if page is None or page == number_page:
+                            result['upd'] = True
+                            val = [bat._asdict() for bat in batch]
+                            insert_stmt = table_recipient.insert().values(val)
+                            connection.execute(insert_stmt)
+                            connection.commit()
+                        number_page += 1
+        except Exception as e:
+            result['error'] = str(e)
+        return result
 
 
 class UpdatingPortalServis:
+
     def update_portal(self, portal: str) -> dict:
         result = {}
         with SSHTunnelForwarder(
@@ -121,8 +132,7 @@ class UpdatingPortalServis:
                 result['update_portal'] = 'not started'
         return result
 
-    def etl(self):
-
+    def etl(self, page: int | None):
         with SSHTunnelForwarder(
                 ssh_address_or_host=settings.recipient.host,
                 ssh_username=settings.recipient.login,
@@ -144,7 +154,7 @@ class UpdatingPortalServis:
             server_sender.start()
 
             etl_services = EtlServices(server_sender, server_recipient)
-            return etl_services.overload_tables()
+            return etl_services.overload_tables(page)
 
 
 def get_portal_service():

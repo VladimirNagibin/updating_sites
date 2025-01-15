@@ -2,7 +2,6 @@ services:
   app:
     volumes:
       - ./app/src:/opt/app
-      #- .env:/opt/app/src/.env
     env_file:
       - .env
     ports:

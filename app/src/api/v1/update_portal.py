@@ -1,12 +1,26 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, Response  #, HTTPException
-#from pydantic import UUID4
+from fastapi import APIRouter, Depends, Response
 
 from services.portals import UpdatingPortalServis, get_portal_service
-from schemas.v1.entity import UpdTable, UpdPortal
+from schemas.v1.entity import EtlTable, UpdTable, UpdPortal
 
 upd_portal = APIRouter()
+
+
+@upd_portal.get(
+        "/etl", summary="reload portal", description="Reload portals."
+    )
+def reload_port(
+    response: Response,
+    page: int | None = None,
+    upd_service: UpdatingPortalServis = Depends(get_portal_service),
+) -> EtlTable:
+    result = upd_service.etl(page)
+    print(result)
+    if result.get('error'):
+        response.status_code = HTTPStatus.BAD_REQUEST
+    return EtlTable(**result)
 
 
 @upd_portal.get(

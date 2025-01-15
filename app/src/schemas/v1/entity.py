@@ -10,3 +10,10 @@ class UpdTable(BaseModel):
 class UpdPortal(BaseModel):
     upd_tables: list[UpdTable]
     upd_portal: str
+
+
+class EtlTable(BaseModel):
+    tables: list[str]
+    page: int | None
+    upd: bool
+    error: str | None = None
