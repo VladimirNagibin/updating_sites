@@ -17,7 +17,6 @@ def reload_port(
     upd_service: UpdatingPortalServis = Depends(get_portal_service),
 ) -> EtlTable:
     result = upd_service.etl(page)
-    print(result)
     if result.get('error'):
         response.status_code = HTTPStatus.BAD_REQUEST
     return EtlTable(**result)

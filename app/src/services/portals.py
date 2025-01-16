@@ -83,7 +83,6 @@ class EtlServices:
             with self.engine_recipient.connect() as connection:
                 for table_name in get_tables_for_overload(page):
                     result['tables'].append(table_name)
-                    print(table_name)
                     table_recipient = Table(
                         table_name,
                         metadata,
