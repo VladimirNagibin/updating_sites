@@ -1,3 +1,4 @@
+import os
 from logging import config as logging_config
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -71,6 +72,8 @@ class Settings(BaseSettings):
 
     sender: SettingsSender = SettingsSender()
     recipient: SettingsRecipient = SettingsRecipient()
+
+    base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 settings = Settings()

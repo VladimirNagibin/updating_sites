@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends, Response
 
 from services.portals import UpdatingPortalServis, get_portal_service
-from schemas.v1.entity import EtlTable, UpdTable, UpdPortal
+from schemas.v1.entity import EtlTable, ExportTable, UpdTable, UpdPortal
 
 upd_portal = APIRouter()
 
@@ -20,6 +20,21 @@ def reload_port(
     if result.get('error'):
         response.status_code = HTTPStatus.BAD_REQUEST
     return EtlTable(**result)
+
+
+@upd_portal.get(
+        "/export", summary="export tables", description="Export tables."
+    )
+def export_port(
+    response: Response,
+    portal: str = 'ismy',
+    upd_service: UpdatingPortalServis = Depends(get_portal_service),
+) -> list[ExportTable]:
+    results = upd_service.export_table(portal)
+    err = [result['error'] for result in results if result.get('error')]
+    if err:
+        response.status_code = HTTPStatus.BAD_REQUEST
+    return [ExportTable(**result) for result in results]
 
 
 @upd_portal.get(

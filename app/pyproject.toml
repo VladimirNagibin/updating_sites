@@ -17,6 +17,7 @@ SQLAlchemy = "2.0.32"
 PyMySQL = "1.1.1"
 pandas = "2.2.2"
 mysqlclient = "2.2.7"
+aiofile = "3.9.0"
 
 [build-system]
 requires = ["poetry-core"]

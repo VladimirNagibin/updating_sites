@@ -1,3 +1,6 @@
+import subprocess
+import zipfile
+
 import pandas as pd
 from sshtunnel import SSHTunnelForwarder
 from sqlalchemy import create_engine, text, Table, MetaData
@@ -7,7 +10,8 @@ from core.settings import settings
 from services.helper import (
     get_request_for_upd,
     get_files_tables,
-    get_tables_for_overload
+    get_tables_for_export,
+    get_tables_for_overload,
 )
 
 
@@ -76,7 +80,7 @@ class EtlServices:
             while results := source_data.fetchmany(10000):
                 yield results
 
-    def overload_tables(self, page: int | None = None):
+    def overload_tables(self, page: int | None = None) -> dict:
         metadata = MetaData()
         result: dict = {'tables': [], 'page': page, 'upd': False}
         try:
@@ -102,6 +106,41 @@ class EtlServices:
         except Exception as e:
             result['error'] = str(e)
         return result
+
+
+class ExportService:
+    def __init__(self, server: SSHTunnelForwarder, portal: str) -> None:
+        self.portal = portal
+        self.port = server.local_bind_port
+
+    def update_table(self, part: int) -> tuple[int, str]:
+        host = settings.ssh_tunnel_local_host
+        port = self.port
+        db_user = settings.portals_settings[self.portal].user_db
+        db_pass = settings.portals_settings[self.portal].password_db
+        database = settings.portals_settings[self.portal].name_db
+        # filestamp = time.strftime('%Y-%m-%d-%I')
+        file = f'data/upload/{database}_{part}'
+        tables = ' '.join(get_tables_for_export(part))
+        result = subprocess.run(
+            f"mysqldump -h %s -P %s -u %s -p%s %s {tables} > %s.sql" % (
+                host, port, db_user, db_pass, database, file
+            ),
+            shell=True
+        )
+        return result.returncode, file
+
+    def zip_file(self, file: str) -> str:
+        zip_file_name_path = f'{file}.zip'
+        zip_file_name = f'{file.rsplit("/")[-1]}.zip'
+        try:
+            with zipfile.ZipFile(
+                zip_file_name_path, "w", compression=zipfile.ZIP_DEFLATED
+            ) as zipf:
+                zipf.write(file, zip_file_name)
+                return zip_file_name_path
+        except Exception as e:
+            raise e
 
 
 class UpdatingPortalServis:
@@ -154,6 +193,40 @@ class UpdatingPortalServis:
 
             etl_services = EtlServices(server_sender, server_recipient)
             return etl_services.overload_tables(page)
+
+    def export_table_part(self, export_services: ExportService, part: int):
+        result: dict[str, int | str] = {}
+        result['part'] = part
+        try:
+            result['result'], file = export_services.update_table(part)
+            file += '.sql'
+            if result['result'] == 0:
+                try:
+                    zip_file = export_services.zip_file(file)
+                    result['file'] = zip_file
+                except Exception:
+                    result['file'] = file
+            else:
+                result['error'] = 'Error exporting tables'
+        except Exception as e:
+            result['error'] = str(e)
+        return result
+
+    def export_table(self, portal: str):
+        result = []
+        with SSHTunnelForwarder(
+            ssh_address_or_host=settings.host,
+            ssh_username=settings.login,
+            ssh_password=settings.password,
+            remote_bind_address=(
+                settings.ssh_tunnel_local_host, settings.ssh_tunnel_local_port
+            )
+        ) as server:
+            server.start()
+            export_services = ExportService(server, portal)
+            result.append(self.export_table_part(export_services, 1))
+            result.append(self.export_table_part(export_services, 2))
+        return result
 
 
 def get_portal_service():

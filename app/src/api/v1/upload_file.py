@@ -1,8 +1,11 @@
 #import base64
-#import os
+import os
 from http import HTTPStatus
+import aiofile
 
+from core.settings import settings
 from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 
 upload_file_router = APIRouter()
 
@@ -29,3 +32,14 @@ async def upload_file(path: str, file: UploadFile = File(...)):
         file.file.close()
 
     return {"result": HTTPStatus.OK}
+
+
+@upload_file_router.get(
+        "/export",
+        summary="export file",
+        description="Export file by the path.",
+    )
+def export_file(file: str) -> FileResponse:
+    if not os.path.exists(os.path.join(settings.base_dir, file)):
+        return {"error": "File not found"}
+    return FileResponse(file, filename=file.rsplit("/")[-1])

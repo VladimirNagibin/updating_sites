@@ -17,3 +17,10 @@ class EtlTable(BaseModel):
     page: int | None
     upd: bool
     error: str | None = None
+
+
+class ExportTable(BaseModel):
+    part: int
+    result: int | None = None
+    file: str | None = None
+    error: str | None = None

@@ -8,6 +8,9 @@ ENV PYTHONUNBUFFERED 1
 COPY  ./pyproject.toml /opt/app/
 
 RUN apt-get update && apt-get install -y python3-dev default-libmysqlclient-dev build-essential pkg-config 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends default-mysql-client && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN python -m pip install --no-cache-dir poetry==1.8.5 \
     && poetry config virtualenvs.create false \

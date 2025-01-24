@@ -664,3 +664,50 @@ def get_tables_for_overload(page: int | None) -> list:
         ]
     else:
         return ['p43j_product']
+
+
+def get_tables_for_export(part: int | None) -> list:
+    if part == 1:
+        return [
+            'p43j_category',
+            'p43j_category_description',
+            'p43j_category_filter',
+            'p43j_category_path',
+            'p43j_category_to_layout',
+            'p43j_category_to_store',
+            'p43j_manufacturer',
+            'p43j_manufacturer_description',
+            'p43j_manufacturer_to_layout',
+            'p43j_manufacturer_to_store',
+            'p43j_product',
+            'p43j_product_attribute',
+            'p43j_product_description',
+            'p43j_product_discount',
+            'p43j_product_filter',
+            'p43j_product_image',
+            'p43j_product_option',
+            'p43j_product_option_value',
+            'p43j_product_recurring',
+            'p43j_product_related',
+            'p43j_product_related_article',
+            'p43j_product_related_mn',
+            'p43j_product_related_wb',
+            'p43j_product_reward',
+            'p43j_product_special',
+            'p43j_product_tab',
+            'p43j_product_tab_desc',
+            'p43j_product_to_benefit',
+            'p43j_product_to_category',
+            'p43j_product_to_download',
+            'p43j_product_to_layout',
+            'p43j_product_to_sticker',
+            'p43j_product_to_store',
+        ]
+    else:
+        return [
+            'p43j_product_to_category',
+            'p43j_product_to_download',
+            'p43j_product_to_layout',
+            'p43j_product_to_sticker',
+            'p43j_product_to_store',
+        ]
