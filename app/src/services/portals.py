@@ -132,7 +132,7 @@ class ExportService:
 
     def zip_file(self, file: str) -> str:
         zip_file_name_path = f'{file}.zip'
-        zip_file_name = f'{file.rsplit("/")[-1]}.zip'
+        zip_file_name = file.rsplit("/")[-1]
         try:
             with zipfile.ZipFile(
                 zip_file_name_path, "w", compression=zipfile.ZIP_DEFLATED

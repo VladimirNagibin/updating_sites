@@ -4,7 +4,7 @@ from http import HTTPStatus
 import aiofile
 
 from core.settings import settings
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 
 upload_file_router = APIRouter()
@@ -39,7 +39,8 @@ async def upload_file(path: str, file: UploadFile = File(...)):
         summary="export file",
         description="Export file by the path.",
     )
-def export_file(file: str) -> FileResponse:
+async def export_file(response: Response, file: str) -> FileResponse:
     if not os.path.exists(os.path.join(settings.base_dir, file)):
+        response.status_code = HTTPStatus.BAD_REQUEST
         return {"error": "File not found"}
     return FileResponse(file, filename=file.rsplit("/")[-1])
