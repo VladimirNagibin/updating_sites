@@ -75,5 +75,18 @@ class Settings(BaseSettings):
 
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+    dropbox_app_key: str = "dropbox_app_key"
+    dropbox_app_secret: str = "dropbox_app_secret"
+    dropbox_token_url: str = "dropbox_token_url"
+
+    portals_dropbox: list = [
+        ('sm', '/! СМ !/Прайсы нужно скачать!!!/'),
+        ('inet', '/! ИНЕТ !/Прайсы нужно скачать!!!/'),
+        (
+            'ismy',
+            '/!!! Для скачивания всей папки в архив нажмите Download !!!/'
+        )
+    ]
+
 
 settings = Settings()

@@ -2,10 +2,10 @@ import os
 from http import HTTPStatus
 import aiofile
 
-from core.settings import settings
 from fastapi import APIRouter, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 
+from core.settings import settings
 from services.helper import decode_val
 
 upload_file_router = APIRouter()

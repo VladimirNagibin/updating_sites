@@ -1,8 +1,7 @@
 from http import HTTPStatus
-import shutil
+
 from fastapi import APIRouter, Depends, Response
 
-from services.helper import decode_val
 from services.storage import get_storage, State
 
 storage = APIRouter()
