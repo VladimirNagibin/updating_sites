@@ -24,8 +24,6 @@ def upload_file(
     try:
         contents = file.file.read()
         filename = filename if filename else file.filename
-        #ÊÏ 20250127 Ïàðôþìåðèÿ.xls+
-        print(f'{filename}+++++++++++++++++++++++++++++++++++++++++')
         with open(f"data/{path}/{decode_val(filename)}", "wb") as f:
             f.write(contents)
     except Exception:
