@@ -711,3 +711,15 @@ def get_tables_for_export(part: int | None) -> list:
             'p43j_product_to_sticker',
             'p43j_product_to_store',
         ]
+
+
+def decode_val(value: str) -> str:
+    value = value.replace('ÊÏ', 'КП')
+    value = value.replace('Ïàðôþìåðèÿ', 'Парфюмерия')
+    value = value.replace('Êîëãîòêè è Áåëü¸', 'Колготки и Бельё')
+    value = value.replace('Êîñìåòèêà', 'Косметика')
+    value = value.replace('ÊÏ', 'КП')
+    value = value.replace('ÊÏ', 'КП')
+    value = value.replace('ÊÏ', 'КП')
+
+    return value

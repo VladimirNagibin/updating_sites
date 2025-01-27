@@ -5,6 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
+from api.v1.storage import storage
 from api.v1.update_portal import upd_portal
 from api.v1.upload_file import upload_file_router
 from core.logger import LOGGING
@@ -26,6 +27,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.include_router(storage, prefix="/api/v1/storage", tags=["storage"])
 app.include_router(upload_file_router, prefix="/api/v1/files", tags=["files"])
 app.include_router(upd_portal, prefix="/api/v1/update", tags=["update"])
 

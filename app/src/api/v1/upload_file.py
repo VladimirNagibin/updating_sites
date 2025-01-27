@@ -1,4 +1,3 @@
-#import base64
 import os
 from http import HTTPStatus
 import aiofile
@@ -6,6 +5,8 @@ import aiofile
 from core.settings import settings
 from fastapi import APIRouter, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
+
+from services.helper import decode_val
 
 upload_file_router = APIRouter()
 
@@ -15,13 +16,17 @@ upload_file_router = APIRouter()
         summary="upload file",
         description="Upload file by the path.",
     )
-async def upload_file(path: str, file: UploadFile = File(...)):
+def upload_file(
+    path: str,
+    filename: str | None = None,
+    file: UploadFile = File(...)
+):
     try:
         contents = file.file.read()
-        #decoded_bytes = base64.b64decode(contents)
-        #decoded_string = decoded_bytes.decode("utf-8")
-        #print(type(contents))
-        with open(f"data/{path}/{file.filename}", "wb") as f:
+        filename = filename if filename else file.filename
+        #ÊÏ 20250127 Ïàðôþìåðèÿ.xls+
+        print(f'{filename}+++++++++++++++++++++++++++++++++++++++++')
+        with open(f"data/{path}/{decode_val(filename)}", "wb") as f:
             f.write(contents)
     except Exception:
         raise HTTPException(
@@ -30,7 +35,6 @@ async def upload_file(path: str, file: UploadFile = File(...)):
         )
     finally:
         file.file.close()
-
     return {"result": HTTPStatus.OK}
 
 
