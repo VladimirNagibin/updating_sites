@@ -4,7 +4,10 @@ from logging import config as logging_config
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from core.logger import LOGGING
+from dotenv import load_dotenv
 
+
+load_dotenv()
 logging_config.dictConfig(LOGGING)
 
 
@@ -17,7 +20,7 @@ class SettingsPortal(BaseSettings):
 
     @property
     def mysql_db(self):
-        return (f'mysql://{self.user_db}:{self.password_db}@'
+        return (f'mysql+pymysql://{self.user_db}:{self.password_db}@'
                 f'{settings.ssh_tunnel_local_host}:%d/{self.name_db}')
 
 

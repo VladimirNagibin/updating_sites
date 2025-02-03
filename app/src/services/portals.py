@@ -52,13 +52,17 @@ class PortalServices:
         return result, success
 
     def update_portal(self):
-        with self.engine.connect() as connection:
-            request = get_request_for_upd(self.portal)
-            try:
-                result = connection.execute(text(request))
-            except Exception as e:
-                raise e
-            return result
+        result = True
+        try:
+            with self.engine.connect() as connection:
+                request = get_request_for_upd(self.portal)
+                with connection.begin():
+                    for query in request.split(";"):
+                        if query.strip():
+                            connection.execute(text(query))
+        except Exception as e:
+            raise e
+        return result
 
 
 class EtlServices:
