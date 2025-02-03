@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 
 import dropbox
@@ -19,8 +20,8 @@ class DropboxService:
     def authorize() -> None:
         storage = get_storage()
         auth_flow = DropboxOAuth2FlowNoRedirect(
-            settings.dropbox_app_key,  # put real key
-            settings.dropbox_app_secret,  # put real secret
+            settings.dropbox_app_key,  # put real key for local exec
+            settings.dropbox_app_secret,  # put real secret for local exec
             token_access_type='offline',
         )
 
@@ -59,8 +60,10 @@ class DropboxService:
             'client_id': settings.dropbox_app_key,
             'client_secret': settings.dropbox_app_secret
         }
-
-        response = requests.post(settings.dropbox_token_url, data=data)
+        try:
+            response = requests.post(settings.dropbox_token_url, data=data)
+        except Exception:
+            return 500
         status_code = response.status_code
         if status_code == 200:
             token_data = response.json()
@@ -79,8 +82,9 @@ class DropboxService:
             try:
                 with open(local_file_path, 'rb') as f:
                     dbx.files_upload(
-                        f.read(), dropbox_file_path,
-                        mode=dropbox.files.WriteMode.overwrite
+                        f.read(),
+                        dropbox_file_path,
+                        mode=dropbox.files.WriteMode.overwrite,
                     )
                     print(f"Файл {local_file_path} успешно загружен в Dropbox "
                           f"по пути {dropbox_file_path}")
@@ -128,12 +132,28 @@ class DropboxService:
                                 f.read(), dropbox_file_path,
                                 mode=dropbox.files.WriteMode.overwrite
                             )
-                            # dropbox_file_path_old = state.get_state(f'{portal}_fa{ind}_dropbox')
-                            # try:
-                            #    dbx.files_delete_v2(dropbox_file_path_old)
-                            #        except dropbox.exceptions.ApiError as e:
-                            #        print(f"Ошибка при загрузке файла: {e}")
-                            # del local old price
+
+                            dropbox_file_path_old = state.get_state(
+                                f'{portal}_fa{ind}_dropbox'
+                            )
+                            try:
+                                dbx.files_delete_v2(dropbox_file_path_old)
+                            except dropbox.exceptions.ApiError as e:
+                                print(f'Ошибка при удалении файла: {e}')
+                            file_old = dropbox_file_path_old.rsplit('/')[-1]
+                            try:
+                                os.remove(f'data/prices/{file_old}')
+                                print(f'Файл {file_old} успешно удален.')
+                            except FileNotFoundError:
+                                print(f'Файл {file_old} не найден.')
+                            except PermissionError:
+                                print(
+                                    'Нет прав на удаление файла '
+                                    f'{file_old}.'
+                                )
+                            except Exception as e:
+                                print(f"Произошла ошибка: {e}")
+
                             state.set_state(
                                 f'{portal}_fa{ind}_dropbox',
                                 dropbox_file_path,

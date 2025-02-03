@@ -12,7 +12,6 @@
 - SQLAlchemy
 - PyMySQL
 - pandas
-- mysqlclient
 - sshtunnel
 
 ### Запуск проекта локально:

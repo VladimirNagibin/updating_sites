@@ -1,3 +1,4 @@
+import os
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, Response
@@ -13,7 +14,7 @@ dropbox_router = APIRouter()
         summary="check auth token",
         description="Check auth token.",
     )
-def check_tocken(
+def check_token(
     response: Response,
     dropbox_service: DropboxService = Depends(get_dropbox),
     state: State = Depends(get_storage),
@@ -29,7 +30,7 @@ def check_tocken(
         summary="update auth token",
         description="Update auth token by refresh token.",
     )
-def upd_tocken(
+def upd_token(
     response: Response,
     dropbox_service: DropboxService = Depends(get_dropbox),
     state: State = Depends(get_storage),
@@ -43,7 +44,7 @@ def upd_tocken(
 @dropbox_router.get(
         "/upd_portal_dropbox",
         summary="update portal dropbox",
-        description="CUpdate prices in dropbox.",
+        description="Update prices in dropbox.",
     )
 def upd_portal_dropbox(
     response: Response,
@@ -53,4 +54,4 @@ def upd_portal_dropbox(
     result = dropbox_service.upd_portal_dropbox(state)
     if not result:
         response.status_code = HTTPStatus.BAD_REQUEST
-    return result
+    return True
