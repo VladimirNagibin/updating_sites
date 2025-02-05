@@ -112,8 +112,8 @@ class DropboxService:
         result: list[dict[str, Any]] = []
         if not DropboxService.check_auth_token(state):
             DropboxService.get_auth_token_by_refresh(state)
-        #if not DropboxService.check_auth_token(state):
-        return result
+        if not DropboxService.check_auth_token(state):
+            return result
         with dropbox.Dropbox(
             oauth2_access_token=state.get_state("access_token")
         ) as dbx:
