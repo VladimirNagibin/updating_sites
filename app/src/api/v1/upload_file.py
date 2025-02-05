@@ -45,9 +45,7 @@ def upload_file(
     summary="export file",
     description="Export file by the path.",
 )
-async def export_file(
-    response: Response, file: str
-) -> FileResponse:
+async def export_file(response: Response, file: str) -> FileResponse:
     if not os.path.exists(os.path.join(settings.base_dir, file)):
         response.status_code = HTTPStatus.BAD_REQUEST
         return {"error": "File not found"}

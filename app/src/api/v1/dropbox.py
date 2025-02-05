@@ -52,9 +52,8 @@ def upd_portal_dropbox(
     state: State = Depends(get_storage),
 ) -> list[UpdFilesDropbox]:
     result = dropbox_service.upd_portal_dropbox(state)
-    if not result or [order["error"] for order in result if order.get("error")]:
+    if not result or [
+        order["error"] for order in result if order.get("error")
+    ]:
         response.status_code = HTTPStatus.BAD_REQUEST
-    # err = [order["error"] for order in result if order.get("error")]
-    # if err:
-    #    response.status_code = HTTPStatus.BAD_REQUEST
     return [UpdFilesDropbox(**order) for order in result]
