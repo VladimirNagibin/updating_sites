@@ -40,7 +40,7 @@ cp .env.example .env
 sudo docker compose up
 ```
 
-Сайт будет доступен по адресу http://127.0.0.1:8000/api/openapi
+OpenAPI документация будет доступна по адресу http://127.0.0.1:8000/api/openapi
 
 ____
 
