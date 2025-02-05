@@ -8,10 +8,10 @@ storage = APIRouter()
 
 
 @storage.post(
-        "/add-in-storage",
-        summary="add in storage",
-        description="Add key:value in storage.",
-    )
+    "/add-in-storage",
+    summary="add in storage",
+    description="Add key:value in storage.",
+)
 def add_in_storage(
     response: Response,
     key: str,
@@ -25,10 +25,10 @@ def add_in_storage(
 
 
 @storage.get(
-        "/get-from-storage",
-        summary="get from storage",
-        description="Get value by key from storage.",
-    )
+    "/get-from-storage",
+    summary="get from storage",
+    description="Get value by key from storage.",
+)
 def get_from_storage(
     response: Response,
     key: str,

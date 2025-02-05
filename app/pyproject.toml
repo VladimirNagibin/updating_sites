@@ -17,13 +17,16 @@ sshtunnel = "0.4.0"
 SQLAlchemy = "2.0.32"
 PyMySQL = "1.1.1"
 pandas = "2.2.2"
-aiofile = "3.9.0"
 dropbox = "12.0.2" 
 python-dotenv = "1.0.1"
+aiofile = "3.9.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 87
+line-length = 79
+
+[tool.mypy]
+mypy-path = ["./src"]

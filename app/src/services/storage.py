@@ -27,13 +27,13 @@ class JsonFileStorage(BaseStorage):
 
     def save_state(self, state: dict[str, Any]) -> None:
         """Save the state to the storage."""
-        with open(self.file_path, 'w', encoding='utf-8') as f:
+        with open(self.file_path, "w", encoding="utf-8") as f:
             json.dump(state, f)
 
     def retrieve_state(self) -> dict[str, Any]:
         """Get the state from the storage."""
         try:
-            with open(self.file_path, 'r', encoding='utf-8') as f:
+            with open(self.file_path, "r", encoding="utf-8") as f:
                 state = json.load(f)
         except (json.JSONDecodeError, FileNotFoundError):
             state = {}
@@ -64,6 +64,7 @@ class State:
         except Exception:
             return None
 
+
 @lru_cache()
-def get_storage(path: str = 'data/storage/storage.json') -> State:
+def get_storage(path: str = "data/storage/storage.json") -> State:
     return State(JsonFileStorage(path))

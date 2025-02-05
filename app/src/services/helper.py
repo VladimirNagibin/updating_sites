@@ -1,5 +1,8 @@
-def get_request_for_upd(portal: str):
-    if portal == 'ornam':
+from typing import Any
+
+
+def get_request_for_upd(portal: str) -> Any:
+    if portal == "ornam":
         return """
             TRUNCATE TABLE `EXCategories`;
             INSERT INTO `EXCategories` ( `category_id`, `parent_id`, `name`, `top`, `columns`, `sort_order`, `image_name`, `date_added`, `date_modified`, `language_id`, `seo_keyword`, `description`, `meta_description`, `meta_keywords`, `seo_title`, `seo_h1`, `store_ids`, `layout`)
@@ -109,7 +112,7 @@ def get_request_for_upd(portal: str):
 
             UPDATE `oc_category` INNER JOIN `nearoms` ON `oc_category`.`category_id` = `nearoms`.`ID` SET `oc_category`.`status` = "1";
             """
-    elif portal == 'butic':
+    elif portal == "butic":
         return """
             TRUNCATE TABLE `EXCategories`;
             INSERT INTO `EXCategories` ( `category_id`, `parent_id`, `name`, `top`, `columns`, `sort_order`, `image_name`, `date_added`, `date_modified`, `language_id`, `seo_keyword`, `description`, `meta_description`, `meta_keywords`, `seo_title`, `seo_h1`, `store_ids`, `layout`)
@@ -351,7 +354,7 @@ def get_request_for_upd(portal: str):
 
             UPDATE fd653_product_description pd SET pd.meta_description = CONCAT(pd.name, " — ", "доставим курьером в любой район Новосибирска или транспортной компанией по всей России"), pd.meta_keyword = pd.name;
         """
-    elif portal == 'ismy':
+    elif portal == "ismy":
         return """
             TRUNCATE TABLE `EXCategories`;
             INSERT INTO `EXCategories` ( `category_id`, `parent_id`, `name`, `top`, `columns`, `sort_order`, `image_name`, `date_added`, `date_modified`, `language_id`, `seo_keyword`, `description`, `meta_description`, `meta_keywords`, `seo_title`, `seo_h1`, `store_ids`, `layout`)
@@ -604,119 +607,118 @@ def get_request_for_upd(portal: str):
 
 
 def get_files_tables(portal: str):
-    if portal == 'ornam':
+    if portal == "ornam":
         return [
-            ('data/ornam/AdditionalImages.txt', 'AdditionalImages'),
-            ('data/ornam/Categories.txt', 'Categories'),
-            ('data/ornam/Options.txt', 'Options'),
-            ('data/ornam/Products.txt', 'Products'),
+            ("data/ornam/AdditionalImages.txt", "AdditionalImages"),
+            ("data/ornam/Categories.txt", "Categories"),
+            ("data/ornam/Options.txt", "Options"),
+            ("data/ornam/Products.txt", "Products"),
         ]
-    elif portal == 'butic':
+    elif portal == "butic":
         return [
-            ('data/butic/AdditionalImages.txt', 'AdditionalImages'),
-            ('data/butic/Categories.txt', 'Categories'),
-            ('data/butic/Products1.txt', 'Products'),
+            ("data/butic/AdditionalImages.txt", "AdditionalImages"),
+            ("data/butic/Categories.txt", "Categories"),
+            ("data/butic/Products1.txt", "Products"),
         ]
-    elif portal == 'ismy':
+    elif portal == "ismy":
         return [
-            ('data/ismy/AdditionalImages.txt', 'AdditionalImages'),
-            ('data/ismy/Categories.txt', 'Categories'),
-            ('data/ismy/Products.txt', 'Products'),
+            ("data/ismy/AdditionalImages.txt", "AdditionalImages"),
+            ("data/ismy/Categories.txt", "Categories"),
+            ("data/ismy/Products.txt", "Products"),
         ]
 
 
-def get_tables_for_overload(page: int | None) -> list:
+def get_tables_for_overload(page: int | None) -> list[str]:
     if page is None:
         return [
-            'p43j_category',
-            'p43j_category_description',
-            'p43j_category_filter',
-            'p43j_category_path',
-            'p43j_category_to_layout',
-            'p43j_category_to_store',
-            'p43j_manufacturer',
-            'p43j_manufacturer_description',
-            'p43j_manufacturer_to_layout',
-            'p43j_manufacturer_to_store',
+            "p43j_category",
+            "p43j_category_description",
+            "p43j_category_filter",
+            "p43j_category_path",
+            "p43j_category_to_layout",
+            "p43j_category_to_store",
+            "p43j_manufacturer",
+            "p43j_manufacturer_description",
+            "p43j_manufacturer_to_layout",
+            "p43j_manufacturer_to_store",
             # 'p43j_product',
-            'p43j_product_attribute',
-            'p43j_product_description',
-            'p43j_product_discount',
-            'p43j_product_filter',
-            'p43j_product_image',
-            'p43j_product_option',
-            'p43j_product_option_value',
-            'p43j_product_recurring',
-            'p43j_product_related',
-            'p43j_product_related_article',
-            'p43j_product_related_mn',
-            'p43j_product_related_wb',
-            'p43j_product_reward',
-            'p43j_product_special',
-            'p43j_product_tab',
-            'p43j_product_tab_desc',
-            'p43j_product_to_benefit',
-            'p43j_product_to_category',
-            'p43j_product_to_download',
-            'p43j_product_to_layout',
-            'p43j_product_to_sticker',
-            'p43j_product_to_store',
+            "p43j_product_attribute",
+            "p43j_product_description",
+            "p43j_product_discount",
+            "p43j_product_filter",
+            "p43j_product_image",
+            "p43j_product_option",
+            "p43j_product_option_value",
+            "p43j_product_recurring",
+            "p43j_product_related",
+            "p43j_product_related_article",
+            "p43j_product_related_mn",
+            "p43j_product_related_wb",
+            "p43j_product_reward",
+            "p43j_product_special",
+            "p43j_product_tab",
+            "p43j_product_tab_desc",
+            "p43j_product_to_benefit",
+            "p43j_product_to_category",
+            "p43j_product_to_download",
+            "p43j_product_to_layout",
+            "p43j_product_to_sticker",
+            "p43j_product_to_store",
         ]
     else:
-        return ['p43j_product']
+        return ["p43j_product"]
 
 
-def get_tables_for_export(part: int | None) -> list:
+def get_tables_for_export(part: int | None) -> list[str]:
     if part == 1:
         return [
-            'p43j_category',
-            'p43j_category_description',
-            'p43j_category_filter',
-            'p43j_category_path',
-            'p43j_category_to_layout',
-            'p43j_category_to_store',
-            'p43j_manufacturer',
-            'p43j_manufacturer_description',
-            'p43j_manufacturer_to_layout',
-            'p43j_manufacturer_to_store',
-            'p43j_product',
-            'p43j_product_attribute',
-            'p43j_product_description',
-            'p43j_product_discount',
-            'p43j_product_filter',
-            'p43j_product_image',
-            'p43j_product_option',
-            'p43j_product_option_value',
-            'p43j_product_recurring',
-            'p43j_product_related',
-            'p43j_product_related_article',
-            'p43j_product_related_mn',
-            'p43j_product_related_wb',
-            'p43j_product_reward',
-            'p43j_product_special',
-            'p43j_product_tab',
-            'p43j_product_tab_desc',
-            'p43j_product_to_benefit',
-            'p43j_product_to_category',
-            'p43j_product_to_download',
-            'p43j_product_to_layout',
-            'p43j_product_to_sticker',
-            'p43j_product_to_store',
+            "p43j_category",
+            "p43j_category_description",
+            "p43j_category_filter",
+            "p43j_category_path",
+            "p43j_category_to_layout",
+            "p43j_category_to_store",
+            "p43j_manufacturer",
+            "p43j_manufacturer_description",
+            "p43j_manufacturer_to_layout",
+            "p43j_manufacturer_to_store",
+            "p43j_product",
+            "p43j_product_attribute",
+            "p43j_product_description",
+            "p43j_product_discount",
+            "p43j_product_filter",
+            "p43j_product_image",
+            "p43j_product_option",
+            "p43j_product_option_value",
+            "p43j_product_recurring",
+            "p43j_product_related",
+            "p43j_product_related_article",
+            "p43j_product_related_mn",
+            "p43j_product_related_wb",
+            "p43j_product_reward",
+            "p43j_product_special",
+            "p43j_product_tab",
+            "p43j_product_tab_desc",
+            "p43j_product_to_benefit",
+            "p43j_product_to_category",
+            "p43j_product_to_download",
+            "p43j_product_to_layout",
+            "p43j_product_to_sticker",
+            "p43j_product_to_store",
         ]
     else:
         return [
-            'p43j_product_to_category',
-            'p43j_product_to_download',
-            'p43j_product_to_layout',
-            'p43j_product_to_sticker',
-            'p43j_product_to_store',
+            "p43j_product_to_category",
+            "p43j_product_to_download",
+            "p43j_product_to_layout",
+            "p43j_product_to_sticker",
+            "p43j_product_to_store",
         ]
 
 
 def decode_val(value: str) -> str:
-    value = value.replace('ÊÏ', 'КП')
-    value = value.replace('Ïàðôþìåðèÿ', 'Парфюмерия')
-    value = value.replace('Êîëãîòêè è Áåëü¸', 'Колготки и Бельё')
-    value = value.replace('Êîñìåòèêà', 'Косметика')
-
+    value = value.replace("ÊÏ", "КП")
+    value = value.replace("Ïàðôþìåðèÿ", "Парфюмерия")
+    value = value.replace("Êîëãîòêè è Áåëü¸", "Колготки и Бельё")
+    value = value.replace("Êîñìåòèêà", "Косметика")
     return value

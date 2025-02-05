@@ -1,8 +1,10 @@
+from typing import Any
+
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 LOG_DEFAULT_HANDLERS = [
     "console",
 ]
-LOGGING = {
+LOGGING: dict[str, Any] = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
@@ -14,7 +16,10 @@ LOGGING = {
         },
         "access": {
             "()": "uvicorn.logging.AccessFormatter",
-            "fmt": "%(levelprefix)s %(client_addr)s - '%(request_line)s' %(status_code)s",
+            "fmt": (
+                "%(levelprefix)s %(client_addr)s - '%(request_line)s' "
+                "%(status_code)s"
+            ),
         },
     },
     "handlers": {
